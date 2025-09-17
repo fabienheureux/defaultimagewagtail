@@ -6,19 +6,26 @@ from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 
 from django.db.utils import OperationalError
+from wagtail import blocks
 
 
 def get_image():
     try:
-        return {"image": get_image_model().objects.first(), "decorative": True}
-    except (get_image_model().DoesNotExist, OperationalError):
-        # OperationnalError ensure this won't crash when running makemigrations with
-        # an empty db, in CI for example.
+        return {
+            "machin": {"image": get_image_model().objects.first(), "decorative": True},
+            "youpi": "coucou",
+        }
+    except get_image_model().DoesNotExist:
         return
 
 
+class MachinBlock(blocks.StructBlock):
+    machin = ImageBlock()
+    youpi = blocks.CharBlock()
+
+
 class StoryBlock(StreamBlock):
-    image = ImageBlock(default=get_image())
+    image = MachinBlock(default=get_image)
 
 
 class HomePage(Page):
